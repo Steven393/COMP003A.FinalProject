@@ -4,38 +4,43 @@
  * Purpose:  new user profile intake form for a social media platform
  */
 
-using System;
 class UserProfileIntakeForm
 {
+    static void SectionSeparator(string sectionName)
+    {
+        Console.WriteLine(new string('*', 50));
+        Console.WriteLine(sectionName);
+        Console.WriteLine(new string('*', 50));
+    }
     static void Main(string[] args)
     {
-        static void SectionSeparator(string sectionName)
+        Console.WriteLine("Welcome to the User Profile Intake Form!\r\n\r\nPlease fill out the following information to create your profile.");
+        Console.WriteLine("___________________________________________________________________________________________________");
+
+       SectionSeparator("First & Last name section");
+
+        // Accept user input for first and last name and validates user first name and last name
+        string firstName = GetValidNameInput("First Name: ");
+        string lastName = GetValidNameInput("Last Name: ");
+
+         static string GetValidNameInput(string prompt)
         {
-            Console.WriteLine(new string('*', 50));
-            Console.WriteLine(sectionName);
-            Console.WriteLine(new string('*', 50));
-        }
+            string input;
+            bool isValidInput;
 
-        SectionSeparator("First & Last name section");
+            do
+            {
+                Console.Write(prompt);
+                input = Console.ReadLine();
+                isValidInput = !string.IsNullOrEmpty(input) && !input.Any(char.IsDigit) && !input.Any(char.IsPunctuation);
 
-        // Accept user input for first name
-        Console.Write("First Name: ");
-        string firstName = Console.ReadLine();
+                if (!isValidInput)
+                {
+                    Console.WriteLine("Invalid input. Please enter a valid name.");
+                }
+            } while (!isValidInput);
 
-        // Validate first name input
-        if (string.IsNullOrEmpty(firstName) || firstName.Any(char.IsDigit) || firstName.Any(char.IsPunctuation))
-        {
-            throw new ArgumentException("Invalid input for first name.");
-        }
-
-        // Accept user input for last name
-        Console.Write("Last Name: ");
-        string lastName = Console.ReadLine();
-
-        // Validate last name input
-        if (string.IsNullOrEmpty(lastName) || lastName.Any(char.IsDigit) || lastName.Any(char.IsPunctuation))
-        {
-            throw new ArgumentException("Invalid input for last name.");
+            return input;
         }
 
         Console.WriteLine("\n");
@@ -44,9 +49,14 @@ class UserProfileIntakeForm
         // Accept user input for birth year
         Console.Write("Birth Year (YYYY): ");
         int birthYear;
-        while (!int.TryParse(Console.ReadLine(), out birthYear) || birthYear < 1900 || birthYear > DateTime.Now.Year)
+
+        while (!int.TryParse(Console.ReadLine(), out birthYear) || !IsValidBirthYear(birthYear))
         {
             Console.WriteLine("Invalid input for birth year. Please enter a valid year.");
+        }
+        static bool IsValidBirthYear(int birthYear)
+        {
+            return birthYear >= 1900 && birthYear <= DateTime.Now.Year && birthYear <= 2023;
         }
 
         // Accept user input for gender
@@ -54,9 +64,15 @@ class UserProfileIntakeForm
         char gender = Convert.ToChar(Console.ReadLine().ToUpper());
 
         // Validate gender input
-        if (gender != 'M' && gender != 'F' && gender != 'O')
+        gender = ValidateGenderInput(gender);
+        static char ValidateGenderInput(char gender)
         {
-            throw new ArgumentException("Invalid input for gender.");
+            while (gender != 'M' && gender != 'F' && gender != 'O')
+            {
+                Console.WriteLine("Invalid input for gender. Please enter 'M' for male, 'F' for female, or 'O' for other.");
+                gender = Console.ReadLine().ToUpper()[0];
+            }
+            return gender;
         }
 
         Console.WriteLine("\n");
@@ -64,14 +80,23 @@ class UserProfileIntakeForm
 
         // Create questionnaire
         string[] questions = {"How tall are you?: ", "What is your favorit movie?: ", "Are you single?: ", "Are you in a relationship?: ", "Are you married?: ",
-                            "What are your hobbies?: ", "What do you do for a living?: ", "Are you social?: ", "Do you like reading?: ", "Do you like exercising?: "};
+                    "What are your hobbies?: ", "What do you do for a living?: ", "Are you social?: ", "Do you like reading?: ", "Do you like exercising?: "};
         string[] responses = new string[questions.Length];
 
         // Accept user responses to questionnaire
         for (int i = 0; i < questions.Length; i++)
         {
             Console.Write(questions[i]);
-            responses[i] = Console.ReadLine();
+
+            string input = Console.ReadLine();
+            while (string.IsNullOrEmpty(input))
+            {
+                Console.WriteLine("Invalid input. Please try again.");
+                Console.Write(questions[i]);
+                input = Console.ReadLine();
+            }
+
+            responses[i] = input;
         }
 
         Console.WriteLine("\n");
@@ -80,17 +105,21 @@ class UserProfileIntakeForm
         // Display user profile summary
         Console.WriteLine("Name: " + lastName + ", " + firstName);
         Console.WriteLine("Age: " + (DateTime.Now.Year - birthYear));
-        switch (gender)
+        
+        void PrintGender(char gender)
         {
-            case 'M':
-                Console.WriteLine("Gender: Male");
-                break;
-            case 'F':
-                Console.WriteLine("Gender: Female");
-                break;
-            case 'O':
-                Console.WriteLine("Gender: Other");
-                break;
+            switch (gender)
+            {
+                case 'M':
+                    Console.WriteLine("Gender: Male");
+                    break;
+                case 'F':
+                    Console.WriteLine("Gender: Female");
+                    break;
+                case 'O':
+                    Console.WriteLine("Gender: Other");
+                    break;
+            }
         }
         for (int i = 0; i < questions.Length; i++)
         {
