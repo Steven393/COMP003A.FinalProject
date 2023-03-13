@@ -46,7 +46,7 @@ class UserProfileIntakeForm
         Console.WriteLine("\n");
         SectionSeparator("Birth year & Gender section");
 
-        // Accept user input for birth year
+        // Accept and validate user input for birth year
         Console.Write("Birth Year (YYYY): ");
         int birthYear;
 
@@ -83,7 +83,7 @@ class UserProfileIntakeForm
                     "What are your hobbies?: ", "What do you do for a living?: ", "Are you social?: ", "Do you like reading?: ", "Do you like exercising?: "};
         string[] responses = new string[questions.Length];
 
-        // Accept user responses to questionnaire
+        // Accept and validate user responses to questionnaire
         for (int i = 0; i < questions.Length; i++)
         {
             Console.Write(questions[i]);
